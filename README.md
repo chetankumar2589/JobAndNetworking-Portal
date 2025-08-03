@@ -73,6 +73,7 @@ Create a .env file with your API keys and connection strings.
 npm run dev
 
 Frontend Setup (client directory)
+-
 npm install
 
 npm start
