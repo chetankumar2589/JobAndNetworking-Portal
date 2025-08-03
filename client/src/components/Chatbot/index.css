@@ -1,0 +1,34 @@
+.chatbot-container {
+    @apply max-w-xl mx-auto p-8 bg-gray-800 rounded-xl shadow-lg border border-gray-700 mt-10;
+  }
+  
+  .chat-window {
+    @apply h-96 overflow-y-auto p-4 bg-gray-900 rounded-lg space-y-4;
+  }
+  
+  .message-bubble {
+    @apply p-3 rounded-xl;
+    max-width: 80%;
+  }
+  
+  .message-bubble.user {
+    @apply bg-lime-700 text-white ml-auto;
+  }
+  
+  .message-bubble.bot {
+    @apply bg-gray-700 text-gray-200 mr-auto;
+  }
+  
+  .chat-input-form {
+    @apply flex mt-4 space-x-2;
+  }
+  
+  .chat-input {
+    @apply flex-grow p-3 bg-gray-700 border-2 border-gray-600 rounded-lg focus:outline-none focus:border-lime-500 text-white placeholder-gray-400;
+  }
+  
+  .chat-send-button {
+    @apply px-6 py-3 rounded-lg font-semibold transition duration-300 transform hover:scale-105;
+    @apply bg-gradient-to-r from-lime-400 to-emerald-600 text-gray-900 shadow-md;
+  }
+  

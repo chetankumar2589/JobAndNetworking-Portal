@@ -1,0 +1,21 @@
+.modal-overlay {
+    @apply fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-75 z-50;
+  }
+  
+  .modal-content {
+    @apply bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-700 max-w-sm w-full relative;
+  }
+  
+  .modal-close-button {
+    @apply absolute top-2 right-4 text-gray-400 text-2xl;
+  }
+  
+  .modal-message {
+    @apply text-center text-lg text-gray-300 mb-6;
+  }
+  
+  .modal-ok-button {
+    @apply w-full py-3 rounded-lg text-lg font-semibold transition duration-300 transform hover:scale-105;
+    @apply bg-gradient-to-r from-lime-400 to-emerald-600 text-gray-900 shadow-md;
+  }
+  
