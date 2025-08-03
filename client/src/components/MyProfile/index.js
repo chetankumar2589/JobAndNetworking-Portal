@@ -21,7 +21,7 @@ class MyProfile extends Component {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/profile/me', {
+      const response = await fetch('/api/profile/me', {
         headers: {
           'x-auth-token': token,
         },

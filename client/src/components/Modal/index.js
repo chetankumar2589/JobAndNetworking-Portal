@@ -16,7 +16,7 @@ class Modal extends Component {
           </button>
         </div>
       </div>
-    );
+    );  
   }
 }
 

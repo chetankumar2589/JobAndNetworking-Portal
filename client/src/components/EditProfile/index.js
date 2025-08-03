@@ -25,7 +25,7 @@ class EditProfile extends Component {
 
   fetchProfileData = async (token) => {
     try {
-      const response = await fetch('http://localhost:5000/api/profile/me', {
+      const response = await fetch('/api/profile/me', {
         headers: {
           'x-auth-token': token,
         },
@@ -62,7 +62,7 @@ class EditProfile extends Component {
     const token = localStorage.getItem('token');
     
     try {
-      const response = await fetch('http://localhost:5000/api/profile', {
+      const response = await fetch('/api/profile', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

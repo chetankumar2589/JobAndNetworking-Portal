@@ -33,7 +33,7 @@ class Login extends Component {
     event.preventDefault();
     const { email, password } = this.state;
     const userDetails = { email, password };
-    const url = 'http://localhost:5000/api/auth/login';
+    const url = '/api/auth/login';
     const options = {
       method: 'POST',
       headers: {

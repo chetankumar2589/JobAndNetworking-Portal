@@ -38,7 +38,7 @@ class Register extends Component {
     event.preventDefault();
     const { name, email, password } = this.state;
     const userDetails = { name, email, password };
-    const url = 'http://localhost:5000/api/auth/register';
+    const url = '/api/auth/register';
     const options = {
       method: 'POST',
       headers: {

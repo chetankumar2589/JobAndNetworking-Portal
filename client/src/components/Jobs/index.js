@@ -35,7 +35,7 @@ class Jobs extends Component {
 
   fetchJobs = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/jobs');
+      const response = await fetch('/api/jobs');
       const jobs = await response.json();
       this.setState({ jobs, filteredJobs: jobs, loading: false }, () => {
         this.fetchUserProfileAndMatchScores();
@@ -57,7 +57,7 @@ class Jobs extends Component {
     
     let userId = null;
     try {
-        const userResponse = await fetch('http://localhost:5000/api/profile/me', {
+        const userResponse = await fetch('/api/profile/me', {
             headers: {
                 'x-auth-token': token,
             },
@@ -75,8 +75,8 @@ class Jobs extends Component {
     const matchScores = {};
 
     for (const job of jobs) {
-      try {
-        const response = await fetch('http://localhost:5000/api/ai/match-job', {
+      try { 
+        const response = await fetch('/api/ai/match-job', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

@@ -67,7 +67,7 @@ class JobPost extends Component {
         const adminWallet = new PublicKey('3m5Y3XZeZ4AGpqLzgTZJUgsMztHtr7ZCR3ZWgkqc9tXT');
         
         // Fetch the user's account to get their public wallet address
-        const userResponse = await fetch('http://localhost:5000/api/profile/me', {
+        const userResponse = await fetch('/api/profile/me', {
           headers: {
             'x-auth-token': token,
           },
@@ -100,8 +100,8 @@ class JobPost extends Component {
         await connection.confirmTransaction(txSignature, 'confirmed');
 
         // Step 4: Send the job data and transaction signature to the backend
-        const response = await fetch('http://localhost:5000/api/jobs', {
-            method: 'POST',
+        const response = await fetch('/api/jobs', {
+            method: 'POST', 
             headers: {
                 'Content-Type': 'application/json',
                 'x-auth-token': token,

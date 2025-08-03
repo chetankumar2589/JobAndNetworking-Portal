@@ -25,7 +25,7 @@ class Home extends Component {
             <Link to="/jobs" className="btn-secondary">
               Explore Jobs
             </Link>
-          </div>
+          </div>    
         </div>
       </div>
     );
