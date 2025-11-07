@@ -26,7 +26,7 @@ Phantom Wallet: Seamless integration with the Phantom wallet for secure transact
 
 Solana Devnet: A platform fee of 0.01 SOL is required to post a job, demonstrating a clear monetization model. The transaction is verified on the Solana Devnet.
 
-Payment Logging: Implemented the optional feature to log all successful payments on the backend for audit purposes.
+Payment Logging: Implemented a feature to log all successful payments on the backend for audit purposes.
 
 Module 4: AI Enhancements
 -
