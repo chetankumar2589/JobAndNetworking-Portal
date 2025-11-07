@@ -1,0 +1,16 @@
+.jobs-container {
+  @apply max-w-7xl mx-auto p-8 pt-20;
+  min-height: calc(100vh - 80px);
+}
+
+.search-input {
+  @apply w-full p-3 bg-gray-800 border-2 border-gray-700 rounded-lg focus:outline-none focus:border-lime-500 text-white placeholder-gray-400;
+}
+
+.job-card {
+  @apply p-6 bg-gray-800 rounded-xl shadow-lg border border-gray-700 transition duration-300 transform hover:scale-105;
+}
+
+.skill-tag {
+  @apply px-3 py-1 bg-gray-700 text-gray-300 rounded-full text-xs font-medium mr-2 mb-2;
+}

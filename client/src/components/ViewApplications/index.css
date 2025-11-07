@@ -1,0 +1,66 @@
+.applications-container {
+  @apply max-w-6xl mx-auto px-4 py-8;
+  min-height: calc(100vh - 80px);
+}
+
+.application-card {
+  @apply bg-gray-800 rounded-lg p-6 border border-gray-700;
+}
+
+.application-header {
+  @apply flex justify-between items-center mb-4 pb-4 border-b border-gray-700;
+}
+
+.status-badge {
+  @apply px-3 py-1 rounded-full text-sm font-semibold;
+}
+
+.status-submitted {
+  @apply bg-blue-500 text-white;
+}
+
+.status-reviewed {
+  @apply bg-yellow-500 text-gray-900;
+}
+
+.status-shortlisted {
+  @apply bg-green-500 text-white;
+}
+
+.status-rejected {
+  @apply bg-red-500 text-white;
+}
+
+.application-details {
+  @apply space-y-3 mb-4;
+}
+
+.detail-row {
+  @apply flex flex-col sm:flex-row sm:items-center gap-2;
+}
+
+.detail-label {
+  @apply font-semibold text-gray-400 min-w-[140px];
+}
+
+.detail-value {
+  @apply text-gray-200;
+}
+
+.resume-actions {
+  @apply flex gap-4 mt-4 pt-4 border-t border-gray-700;
+}
+
+.btn-view-resume,
+.btn-download-resume {
+  @apply px-6 py-2 rounded-lg font-semibold transition duration-300 transform hover:scale-105;
+}
+
+.btn-view-resume {
+  @apply bg-lime-500 text-gray-900 hover:bg-lime-400;
+}
+
+.btn-download-resume {
+  @apply bg-emerald-600 text-white hover:bg-emerald-500;
+}
+

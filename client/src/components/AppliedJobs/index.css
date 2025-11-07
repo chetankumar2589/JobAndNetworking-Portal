@@ -1,0 +1,65 @@
+.applied-jobs-container {
+  @apply max-w-6xl mx-auto px-4 py-8;
+  min-height: calc(100vh - 80px);
+}
+
+.applied-job-card {
+  @apply bg-gray-800 rounded-lg p-6 border border-gray-700;
+}
+
+.job-header {
+  @apply flex justify-between items-center mb-4 pb-4 border-b border-gray-700;
+}
+
+.status-badge {
+  @apply px-3 py-1 rounded-full text-sm font-semibold;
+}
+
+.status-submitted {
+  @apply bg-blue-500 text-white;
+}
+
+.status-reviewed {
+  @apply bg-yellow-500 text-gray-900;
+}
+
+.status-shortlisted {
+  @apply bg-green-500 text-white;
+}
+
+.status-rejected {
+  @apply bg-red-500 text-white;
+}
+
+.job-details {
+  @apply mb-4;
+}
+
+.detail-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 gap-4 mb-4;
+}
+
+.detail-item {
+  @apply flex flex-col;
+}
+
+.detail-label {
+  @apply text-gray-400 font-semibold mb-1;
+}
+
+.detail-value {
+  @apply text-gray-200;
+}
+
+.skills-section {
+  @apply mt-4;
+}
+
+.skills-list {
+  @apply flex flex-wrap gap-2 mt-2;
+}
+
+.skill-tag {
+  @apply px-3 py-1 bg-gray-700 text-gray-300 rounded-full text-xs font-medium;
+}
+
