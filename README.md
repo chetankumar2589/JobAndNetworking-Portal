@@ -4,7 +4,7 @@ This is a full-stack web application inspired by platforms like LinkedIn and Upw
 
 Features
 -
-Task 1: Full-Stack Product Development
+Full-Stack Product Development
 -
 Module 1: Authentication & Profile Management
 -
