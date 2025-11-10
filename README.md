@@ -4,7 +4,7 @@ ConnectUS is a full-stack web application that combines the best of job portals,
 
 # Deployed link:
 https://chetan-connect-us.netlify.app/
-# LinkedIn link:
+# LinkedIn link: (you can also check the Demo video there)
 https://www.linkedin.com/posts/chetan-kumar-patruni_fullstackdevelopment-reactjs-nodejs-activity-7393614007657619456-YABJ?utm_source=share&utm_medium=member_desktop&rcm=ACoAAD4_SUQBBYHcCbB8fGJDReojMInn5E4i0Ew
 
 ## 🚀 Features
