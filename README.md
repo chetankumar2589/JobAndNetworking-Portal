@@ -294,8 +294,7 @@ JobAndNetworking-Portal/
 
 ### Job Matching Algorithm
 The AI-powered job matching system calculates a match score (0-100%) based on:
-- **Skill Coverage (70%)**: Percentage of job-required skills that match user skills
-- **Bio Density (30%)**: Frequency of job skills mentioned in user bio
+- Percentage of job-required skills that match user skills ie job skills mentioned in user bio.
 
 ### Payment System
 - Job posting requires a payment of **0.01 SOL** on Solana devnet
