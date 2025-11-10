@@ -100,7 +100,7 @@ class PostedJobs extends Component {
                   <div className="detail-grid">
                     <div className="detail-item">
                       <span className="detail-label">Salary:</span>
-                      <span className="detail-value">{job.salary ? job.salary : job.budget || 'Not specified'}</span>
+                      <span className="detail-value">{job.salary ? `₹${job.salary}` : job.budget ? `₹${job.budget}` : 'Not specified'}</span>
                     </div>
                     
                     <div className="detail-item">

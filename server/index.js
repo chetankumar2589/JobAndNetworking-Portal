@@ -44,7 +44,7 @@ app.use('/api/applications', applicationsRoutes);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.get('/', (req, res) => {
-    res.send('Welcome to the RizeOS Backend!');
+    res.send('Welcome to the ConnectUS Backend!');
 });
 
 app.listen(PORT, () => {

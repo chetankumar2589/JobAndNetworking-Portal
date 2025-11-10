@@ -86,14 +86,14 @@ class AppliedJobs extends Component {
                   {app.job && app.job.salary && (
                     <div className="detail-item">
                       <span className="detail-label">Salary:</span>
-                      <span className="detail-value">{app.job.salary}</span>
+                      <span className="detail-value">₹{app.job.salary}</span>
                     </div>
                   )}
                   
                   {app.job && app.job.budget && (
                     <div className="detail-item">
                       <span className="detail-label">Budget:</span>
-                      <span className="detail-value">{app.job.budget}</span>
+                      <span className="detail-value">₹{app.job.budget}</span>
                     </div>
                   )}
                   

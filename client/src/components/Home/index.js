@@ -13,7 +13,7 @@ class Home extends Component {
       <div className="home-container">
         <div className="text-center px-4">
           <h1 className="text-5xl md:text-7xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-lime-400 to-emerald-600 animate-pulse">
-            RizeOS
+            ConnectUS
           </h1>
           <p className="text-xl md:text-2xl text-gray-400 mb-10 max-w-2xl mx-auto">
             A next-generation Job & Networking Portal, blending Web3, AI, and HR Tech to reshape how you discover work and monetize your skills.

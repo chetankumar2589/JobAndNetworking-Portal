@@ -5,6 +5,172 @@ const User = require('../models/User');
 
 const router = express.Router();
 
+// Skill normalization map for common variations
+// This ensures "React", "react", "React.js", "reactjs" all match as "react"
+const skillNormalizationMap = {
+  // React variations
+  'react': 'react',
+  'reactjs': 'react',
+  'react js': 'react',
+  
+  // Node.js variations
+  'node': 'nodejs',
+  'nodejs': 'nodejs',
+  'node js': 'nodejs',
+  
+  // JavaScript variations
+  'javascript': 'javascript',
+  'js': 'javascript',
+  'ecmascript': 'javascript',
+  
+  // TypeScript variations
+  'typescript': 'typescript',
+  'ts': 'typescript',
+  
+  // MongoDB variations
+  'mongodb': 'mongodb',
+  'mongo': 'mongodb',
+  'mongo db': 'mongodb',
+  
+  // Express variations
+  'express': 'express',
+  'expressjs': 'express',
+  'express js': 'express',
+  
+  // CSS variations
+  'css': 'css',
+  'css3': 'css',
+  
+  // HTML variations
+  'html': 'html',
+  'html5': 'html',
+  
+  // Solana variations
+  'solana': 'solana',
+  
+  // Tailwind variations
+  'tailwind': 'tailwindcss',
+  'tailwind css': 'tailwindcss',
+  'tailwindcss': 'tailwindcss',
+  
+  // Web3 variations
+  'web3': 'web3',
+  'web 3': 'web3',
+  
+  // Redux variations
+  'redux': 'redux',
+  
+  // Next.js variations
+  'next': 'nextjs',
+  'nextjs': 'nextjs',
+  'next js': 'nextjs',
+  
+  // Vue variations
+  'vue': 'vue',
+  'vuejs': 'vue',
+  'vue js': 'vue',
+  
+  // Angular variations
+  'angular': 'angular',
+  'angularjs': 'angular',
+  
+  // Python variations
+  'python': 'python',
+  'python3': 'python',
+  
+  // Java variations
+  'java': 'java',
+  
+  // PHP variations
+  'php': 'php',
+  
+  // SQL variations
+  'sql': 'sql',
+  'mysql': 'mysql',
+  'postgresql': 'postgresql',
+  'postgres': 'postgresql',
+  
+  // Git variations
+  'git': 'git',
+  
+  // Docker variations
+  'docker': 'docker',
+  
+  // AWS variations
+  'aws': 'aws',
+  
+  // UI/UX variations
+  'ui': 'ui',
+  'ux': 'ux',
+  'ui ux': 'ui',
+};
+
+/**
+ * Normalize a skill string to a standard format for accurate matching
+ * Handles variations like "React", "react", "React.js", "reactjs" → "react"
+ * @param {string} skill - The skill string to normalize
+ * @returns {string} - Normalized skill string
+ */
+function normalizeSkill(skill) {
+  if (!skill || typeof skill !== 'string') return '';
+  
+  // Convert to lowercase and trim
+  let normalized = skill.toLowerCase().trim();
+  
+  // Remove special characters (dots, slashes, etc.) but keep spaces and hyphens
+  normalized = normalized.replace(/[^\w\s-]/g, '');
+  
+  // Normalize spaces: replace multiple spaces with single space
+  normalized = normalized.replace(/\s+/g, ' ').trim();
+  
+  // Check direct mapping first
+  if (skillNormalizationMap[normalized]) {
+    return skillNormalizationMap[normalized];
+  }
+  
+  // Generate variations to check (handle common patterns)
+  const variations = [
+    normalized,                                    // Original
+    normalized.replace(/\.js$/, ''),               // Remove ".js" suffix
+    normalized.replace(/js$/, ''),                 // Remove "js" suffix
+    normalized.replace(/\s+js$/, ''),              // Remove " js" suffix
+    normalized.replace(/\./g, ''),                 // Remove all dots
+    normalized.replace(/\s+/g, ''),                // Remove all spaces
+    normalized.replace(/-/g, ''),                  // Remove all hyphens
+    normalized.replace(/\./g, '').replace(/\s+/g, ''), // Remove dots and spaces
+  ];
+  
+  // Check each variation against the map
+  for (const variation of variations) {
+    if (variation && skillNormalizationMap[variation]) {
+      return skillNormalizationMap[variation];
+    }
+  }
+  
+  // If no mapping found, return the cleaned normalized version
+  // This allows exact matching for skills not in our map
+  return normalized;
+}
+
+/**
+ * Normalize an array of skills
+ * @param {Array} skills - Array of skill strings
+ * @returns {Array} - Array of normalized skill strings (unique)
+ */
+function normalizeSkills(skills) {
+  if (!Array.isArray(skills)) {
+    return [];
+  }
+  
+  const normalized = skills
+    .filter(skill => skill && typeof skill === 'string')
+    .map(skill => normalizeSkill(skill))
+    .filter(skill => skill.length > 0);
+  
+  // Return unique skills
+  return [...new Set(normalized)];
+}
+
 // @route   POST /api/ai/extract-skills
 // @desc    Extract skills from text input (using compromise for simplicity)
 // @access  Public
@@ -31,7 +197,7 @@ router.post('/extract-skills', (req, res) => {
 });
 
 // @route   POST /api/ai/match-job
-// @desc    Compute a match score for a job based on user profile using simple NLP overlap (no LLM)
+// @desc    Compute an accurate match score based on exact skill matching
 // @access  Private
 router.post('/match-job', async (req, res) => {
   try {
@@ -43,42 +209,41 @@ router.post('/match-job', async (req, res) => {
       return res.status(404).json({ msg: 'User or Job not found.' });
     }
 
-    // Collect user signals: explicit skills + skills extracted from bio
-    const userExplicitSkills = Array.isArray(user.skills) ? user.skills : [];
-    const userBioText = [user.bio || ''].join(' ');
-    const userBioDoc = nlp(userBioText);
-    const userBioNouns = userBioDoc.nouns().out('array').map(s => String(s).toLowerCase().trim());
-
-    // Normalize job skills (strings or comma-separated strings already stored)
+    // Get user's explicit skills from profile (only use skills array, not bio extraction)
+    const userSkills = Array.isArray(user.skills) ? user.skills : [];
+    
+    // Get job's required skills
     const jobSkills = Array.isArray(job.skills) ? job.skills : [];
 
-    const normalize = (arr) => arr
-      .filter(Boolean)
-      .map(s => String(s).toLowerCase().trim())
-      .filter(Boolean);
-
-    const userSkillSet = new Set(normalize([...userExplicitSkills, ...userBioNouns]));
-    const jobSkillList = normalize(jobSkills);
-
-    if (jobSkillList.length === 0) {
+    // If job has no skills, return 0
+    if (jobSkills.length === 0) {
       return res.json({ matchScore: 0 });
     }
 
-    const matches = jobSkillList.filter(s => userSkillSet.has(s));
+    // If user has no skills, return 0
+    if (userSkills.length === 0) {
+      return res.json({ matchScore: 0 });
+    }
 
-    // Score: 70% based on coverage of required skills, 30% based on density in bio
-    const coverage = matches.length / jobSkillList.length; // 0..1
+    // Normalize both skill arrays
+    const normalizedUserSkills = normalizeSkills(userSkills);
+    const normalizedJobSkills = normalizeSkills(jobSkills);
 
-    const bioDensity = (() => {
-      if (!userBioText) return 0;
-      const bioSet = new Set(userBioNouns);
-      const bioMatches = jobSkillList.filter(s => bioSet.has(s));
-      return bioMatches.length / jobSkillList.length;
-    })();
+    // Create a Set for fast lookup
+    const userSkillSet = new Set(normalizedUserSkills);
 
-    const score = Math.round((coverage * 0.7 + bioDensity * 0.3) * 100);
+    // Find exact matches
+    const matchedSkills = normalizedJobSkills.filter(jobSkill => 
+      userSkillSet.has(jobSkill)
+    );
 
-    res.json({ matchScore: Math.max(0, Math.min(100, score)) });
+    // Calculate match percentage: (matched skills / total job skills) * 100
+    const matchScore = Math.round((matchedSkills.length / normalizedJobSkills.length) * 100);
+
+    // Ensure score is between 0 and 100
+    const finalScore = Math.max(0, Math.min(100, matchScore));
+
+    res.json({ matchScore: finalScore });
   } catch (error) {
     console.error('Skill match error:', error);
     res.status(500).send('Skill matching error.');

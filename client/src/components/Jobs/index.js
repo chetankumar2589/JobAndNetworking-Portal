@@ -20,6 +20,10 @@ class Jobs extends Component {
     submitting: false,
     applyError: '',
     applySuccess: '',
+
+    // Read more modal state
+    isReadMoreOpen: false,
+    selectedJobForReadMore: null,
   };
 
   componentDidMount() {
@@ -97,15 +101,31 @@ class Jobs extends Component {
       } catch (error) {
         console.error('Error fetching match score:', error);
         
+        // Fallback: Basic exact matching with normalization
         if (this.state.userProfile && this.state.userProfile.skills && job.skills) {
-          const userSkills = this.state.userProfile.skills.map(s => s.toLowerCase());
-          const jobSkills = job.skills.map(s => s.toLowerCase());
-          const matchedSkills = userSkills.filter(skill => jobSkills.includes(skill));
-          let score = Math.floor((matchedSkills.length / jobSkills.length) * 100);
-          if (score > 100) score = 100;
-          matchScores[job._id] = score;
+          // Normalize skills for better matching
+          const normalizeSkill = (skill) => {
+            if (!skill) return '';
+            return String(skill).toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/\s+/g, ' ');
+          };
+          
+          const userSkills = (this.state.userProfile.skills || [])
+            .map(s => normalizeSkill(s))
+            .filter(s => s.length > 0);
+          const jobSkills = (job.skills || [])
+            .map(s => normalizeSkill(s))
+            .filter(s => s.length > 0);
+          
+          if (jobSkills.length === 0) {
+            matchScores[job._id] = 0;
+          } else {
+            const userSkillSet = new Set(userSkills);
+            const matchedSkills = jobSkills.filter(jobSkill => userSkillSet.has(jobSkill));
+            const score = Math.round((matchedSkills.length / jobSkills.length) * 100);
+            matchScores[job._id] = Math.max(0, Math.min(100, score));
+          }
         } else {
-          matchScores[job._id] = 'N/A';
+          matchScores[job._id] = 0;
         }
       }
     }
@@ -165,6 +185,20 @@ class Jobs extends Component {
 
   closeApplyModal = () => {
     this.setState({ isApplyOpen: false, selectedJobId: null, resumeFile: null, applyError: '', applySuccess: '' });
+  };
+
+  openReadMoreModal = (job) => {
+    this.setState({ isReadMoreOpen: true, selectedJobForReadMore: job });
+  };
+
+  closeReadMoreModal = () => {
+    this.setState({ isReadMoreOpen: false, selectedJobForReadMore: null });
+  };
+
+  truncateDescription = (description, maxLength = 120) => {
+    if (!description) return '';
+    if (description.length <= maxLength) return description;
+    return description.substring(0, maxLength) + '...';
   };
 
   onResumeChange = (e) => {
@@ -243,7 +277,7 @@ class Jobs extends Component {
   };
 
   render() {
-    const { loading, searchQuery, filteredJobs, matchScores, loadingMatches, isApplyOpen, selectedJobId, contactEmail, contactPhone, submitting, applyError, applySuccess, userProfile } = this.state;
+    const { loading, searchQuery, filteredJobs, matchScores, loadingMatches, isApplyOpen, selectedJobId, contactEmail, contactPhone, submitting, applyError, applySuccess, userProfile, isReadMoreOpen } = this.state;
 
     if (loading) {
       return <div className="text-center mt-20 text-xl">Loading jobs...</div>;
@@ -282,44 +316,121 @@ class Jobs extends Component {
         {filteredJobs.length === 0 ? (
           <div className="text-center mt-10 text-xl">No job postings found.</div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredJobs.map((job) => (
-              <div key={job._id} className="job-card">
-                <h2 className="text-2xl font-semibold text-lime-400">{job.title}</h2>
-                <p className="text-gray-300 mt-2">{job.description}</p>
-                <div className="flex flex-wrap mt-4">
-                  {job.skills.map((skill, index) => (
-                    <span key={index} className="skill-tag">
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-                <div className="mt-4 space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-400">{job.salary ? `Salary: ${job.salary}` : job.budget ? `Budget: ${job.budget}` : 'Not specified'}</span>
-                    {loadingMatches ? (
-                        <span className="text-gray-400">Matching...</span>
-                    ) : (
-                        <span className="text-lg font-bold text-lime-400">
-                            Match: {matchScores[job._id] || 'N/A'}%
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {filteredJobs.map((job) => {
+              const description = job.description || '';
+              const isDescriptionLong = description.length > 120;
+              const truncatedDescription = this.truncateDescription(description, 120);
+              
+              return (
+                <div key={job._id} className="job-card">
+                  <div className="job-card-header">
+                    <h2 className="job-card-title">{job.title}</h2>
+                  </div>
+                  
+                  <div className="job-card-body">
+                    <p className="job-card-description">{truncatedDescription}</p>
+                    {isDescriptionLong && (
+                      <button 
+                        onClick={() => this.openReadMoreModal(job)}
+                        className="read-more-link"
+                      >
+                        Read More
+                      </button>
+                    )}
+                    
+                    <div className="job-card-skills">
+                      {job.skills && job.skills.length > 0 && job.skills.map((skill, index) => (
+                        <span key={index} className="skill-tag">
+                          {skill}
                         </span>
+                      ))}
+                    </div>
+                    
+                    <div className="job-card-details">
+                      <div className="job-card-salary-match">
+                        <span className="job-card-salary">
+                          {job.salary ? `Salary: ₹${job.salary}` : job.budget ? `Budget: ₹${job.budget}` : 'Not specified'}
+                        </span>
+                        {loadingMatches ? (
+                          <span className="job-card-match-loading">Matching...</span>
+                        ) : (
+                          <span className="job-card-match">
+                            {matchScores[job._id] || 'N/A'}% Match
+                          </span>
+                        )}
+                      </div>
+                      
+                      {job.deadline && (
+                        <div className="job-card-deadline">
+                          <i className="fas fa-calendar-alt mr-2"></i>
+                          {new Date(job.deadline).toLocaleDateString()} {new Date(job.deadline).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="job-card-footer">
+                    <button 
+                      className="job-card-apply-btn" 
+                      onClick={() => this.openApplyModal(job._id)}
+                      disabled={job.deadline && new Date(job.deadline) < new Date()}
+                    >
+                      {job.deadline && new Date(job.deadline) < new Date() ? 'Deadline Passed' : 'Apply Now'}
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {isReadMoreOpen && this.state.selectedJobForReadMore && (
+          <div className="modal-overlay" onClick={this.closeReadMoreModal}>
+            <div className="modal-content max-w-2xl" onClick={(e) => e.stopPropagation()}>
+              <button onClick={this.closeReadMoreModal} className="modal-close-button">&times;</button>
+              <h3 className="text-2xl font-bold text-lime-400 mb-4">{this.state.selectedJobForReadMore.title}</h3>
+              <div className="job-readmore-content">
+                <div className="mb-4">
+                  <h4 className="text-lg font-semibold text-gray-300 mb-2">Job Description</h4>
+                  <p className="text-gray-300 whitespace-pre-wrap">{this.state.selectedJobForReadMore.description}</p>
+                </div>
+                {this.state.selectedJobForReadMore.skills && this.state.selectedJobForReadMore.skills.length > 0 && (
+                  <div className="mb-4">
+                    <h4 className="text-lg font-semibold text-gray-300 mb-2">Required Skills</h4>
+                    <div className="flex flex-wrap">
+                      {this.state.selectedJobForReadMore.skills.map((skill, index) => (
+                        <span key={index} className="skill-tag">{skill}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                <div className="mb-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-400">
+                      {this.state.selectedJobForReadMore.salary ? `Salary: ₹${this.state.selectedJobForReadMore.salary}` : this.state.selectedJobForReadMore.budget ? `Budget: ₹${this.state.selectedJobForReadMore.budget}` : 'Not specified'}
+                    </span>
+                    {this.state.selectedJobForReadMore.deadline && (
+                      <span className="text-gray-400">
+                        Deadline: {new Date(this.state.selectedJobForReadMore.deadline).toLocaleDateString()}
+                      </span>
                     )}
                   </div>
-                  {job.deadline && (
-                    <div className="text-sm text-gray-400">
-                      Deadline: {new Date(job.deadline).toLocaleDateString()} {new Date(job.deadline).toLocaleTimeString()}
-                    </div>
-                  )}
+                </div>
+                <div className="flex justify-end mt-6">
                   <button 
-                    className="btn-primary-sm w-full mt-2" 
-                    onClick={() => this.openApplyModal(job._id)}
-                    disabled={job.deadline && new Date(job.deadline) < new Date()}
+                    onClick={() => {
+                      this.closeReadMoreModal();
+                      this.openApplyModal(this.state.selectedJobForReadMore._id);
+                    }}
+                    className="btn-primary-sm"
+                    disabled={this.state.selectedJobForReadMore.deadline && new Date(this.state.selectedJobForReadMore.deadline) < new Date()}
                   >
-                    {job.deadline && new Date(job.deadline) < new Date() ? 'Deadline Passed' : 'Apply'}
+                    Apply Now
                   </button>
                 </div>
               </div>
-            ))}
+            </div>
           </div>
         )}
 

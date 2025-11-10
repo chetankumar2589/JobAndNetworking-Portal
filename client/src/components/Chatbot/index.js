@@ -5,7 +5,7 @@ import './index.css';
 class Chatbot extends Component {
   state = {
     messages: [
-      { sender: 'bot', text: 'Hello! I am RizeOS Bot. How can I help you today?' }
+      { sender: 'bot', text: 'Hello! I am ConnectUS Bot. How can I help you today?' }
     ],
     inputMessage: '',
     loading: false,
@@ -63,7 +63,7 @@ class Chatbot extends Component {
     const { messages, inputMessage, loading } = this.state;
     return (
       <div className="chatbot-container">
-        <h1 className="text-3xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-lime-400 to-emerald-600">RizeOS Bot</h1>
+        <h1 className="text-3xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-lime-400 to-emerald-600">ConnectUS Bot</h1>
         <div className="chat-window">
           {messages.map((msg, index) => (
             <div key={index} className={`message-bubble ${msg.sender === 'user' ? 'user' : 'bot'}`}>

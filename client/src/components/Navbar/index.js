@@ -16,7 +16,7 @@ class Navbar extends Component {
       <nav className="navbar">
         <div className="container mx-auto flex items-center justify-between">
           <Link to="/" className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-lime-400 to-emerald-600">
-            RizeOS
+            ConnectUS
           </Link>
           <div className="flex space-x-6 items-center">
             <NavLink to="/jobs" className={({ isActive }) => isActive ? "nav-link nav-link-active" : "nav-link"}>Jobs</NavLink>
