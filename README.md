@@ -329,10 +329,6 @@ The AI-powered job matching system calculates a match score (0-100%) based on:
 1. Build the production bundle: `npm run build`
 2. Deploy the `build` folder to platforms like Vercel, Netlify, or AWS S3
 
-## 📝 License
-
-This project is open source and available under the MIT License.
-
 ## 👨‍💻 Author
 
 Developed with ❤️ for connecting talented professionals with great opportunities.
