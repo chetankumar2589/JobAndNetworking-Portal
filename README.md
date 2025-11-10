@@ -2,6 +2,9 @@
 
 ConnectUS is a full-stack web application that combines the best of job portals, professional networking, and modern Web3 technology. Built with React, Node.js, MongoDB, and Solana blockchain integration, ConnectUS offers a seamless platform for job seekers and employers to connect, with intelligent AI-powered job matching and secure blockchain-based payments.
 
+# Deployed link:
+https://famous-haupia-318a6d.netlify.app/
+
 ## 🚀 Features
 
 ### Authentication & User Management
